@@ -14,6 +14,7 @@
 		38845DA01A85A88C00858F74 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38845D9F1A85A88C00858F74 /* Images.xcassets */; };
 		38845DA31A85A88C00858F74 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38845DA11A85A88C00858F74 /* LaunchScreen.xib */; };
 		38845DAF1A85A88C00858F74 /* SensingTestingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 38845DAE1A85A88C00858F74 /* SensingTestingTests.m */; };
+		3898C8031A85B0ED001800A0 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3898C8021A85B0ED001800A0 /* opencv2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		38845DA81A85A88C00858F74 /* SensingTestingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SensingTestingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		38845DAD1A85A88C00858F74 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		38845DAE1A85A88C00858F74 /* SensingTestingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SensingTestingTests.m; sourceTree = "<group>"; };
+		3898C8021A85B0ED001800A0 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3898C8031A85B0ED001800A0 /* opencv2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +66,7 @@
 		38845D861A85A88C00858F74 = {
 			isa = PBXGroup;
 			children = (
+				3898C8021A85B0ED001800A0 /* opencv2.framework */,
 				38845D911A85A88C00858F74 /* SensingTesting */,
 				38845DAB1A85A88C00858F74 /* SensingTestingTests */,
 				38845D901A85A88C00858F74 /* Products */,
@@ -345,6 +349,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = SensingTesting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -355,6 +363,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = SensingTesting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -414,6 +426,7 @@
 				38845DB41A85A88C00858F74 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		38845DB51A85A88C00858F74 /* Build configuration list for PBXNativeTarget "SensingTestingTests" */ = {
 			isa = XCConfigurationList;
@@ -422,6 +435,7 @@
 				38845DB71A85A88C00858F74 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
