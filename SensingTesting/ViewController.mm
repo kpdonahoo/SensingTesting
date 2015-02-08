@@ -31,17 +31,21 @@ NSString* tempString;
 float redArray1[360];
 Mat imageFrames[360];
 Mat filteredFrames[360];
+Mat image_new;
 vector<cv::Rect> objects;
 int frameCount;
 int testCheck = 1;
+int frameNumber = 1;
 NSString *baseURL;
 NSMutableDictionary *jsonUpload;
 NSString *uuid = @"1234";
-NSString *frame = @"37";
+NSString *frame;
 NSString *module = @"1";
 NSString *page = @"3";
 NSString *testImage = @"321";
 NSString *result;
+NSData *imageData;
+NSString *tempImage;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -74,35 +78,62 @@ NSString *result;
 }
 
 #ifdef __cplusplus
--(Byte *)matToBytes:(Mat&)image {
-    int size = image.total() * image.elemSize();
-    Byte * bytes = new Byte[size];  // you will have to delete[] that later
-    memcpy(bytes,image.data,size * sizeof(Byte));
-    NSData *dataData = [NSData dataWithBytes:bytes length:sizeof(bytes)];
-    //NSLog(@"data = %@", dataData);
-    return bytes;
+
+-(NSString*)NSStringFromCvMat:(Mat)mat{
+    stringstream ss;
+    ss << mat;
+    return [NSString stringWithCString:ss.str().c_str() encoding:NSASCIIStringEncoding];
 }
 
-
--(Mat&)bytesToMat:(Byte*)bytes :(int)width :(int)height {
-    Mat image = Mat(height,width,CV_8UC3,bytes).clone(); // make a copy
+-(UIImage *)imageWithCVMat:(const Mat&)cvMat {
+    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize() * cvMat.total()];
+    
+    CGColorSpaceRef colorSpace;
+    
+    if(cvMat.elemSize() == 1) {
+        colorSpace = CGColorSpaceCreateDeviceGray();
+        
+    } else {
+        colorSpace = CGColorSpaceCreateDeviceRGB();
+    }
+    
+    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+    
+    CGImageRef imageRef = CGImageCreate(cvMat.cols,
+                                        cvMat.rows,
+                                        8,
+                                        8 * cvMat.elemSize(),
+                                        cvMat.step[0],
+                                        colorSpace,
+                                        kCGImageAlphaNone | kCGBitmapByteOrderDefault,
+                                        provider,
+                                        NULL,
+                                        false,
+                                        kCGRenderingIntentDefault);
+    
+    UIImage *image = [[UIImage alloc] initWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    CGDataProviderRelease(provider);
+    CGColorSpaceRelease(colorSpace);
+    
     return image;
 }
 
 -(void)processImage:(Mat&)image; {
-    Mat image_copy;
     Mat grayFrame, output;
     NSError *error = nil;
     
-    Byte *temp_byte = [self matToBytes:image_copy];
-//    NSLog(@"Converted to bytes.");
-//    NSData *dataData = [NSData dataWithBytes:temp_byte length:sizeof(temp_byte)];
-//    NSLog(@"data = %@", dataData);
-    Mat image_copy_new = [self bytesToMat:temp_byte :640 :480];
-    
-    if(testCheck == 1) {
-        NSLog(@"Bitch, I entered the thing");
-        testCheck = 0;
+    if(testCheck < 24) {
+        testCheck = testCheck + 1;
+        
+        UIImage *uImage = [self imageWithCVMat:image];
+        NSData *dataObj = UIImageJPEGRepresentation(uImage, 1.0);
+        int bytes = [dataObj length];
+        //NSLog(@"%@", dataObj);
+        
+        NSString *byteArray = [dataObj base64Encoding];
+        
+        //NSLog(byteArray);
         
         baseURL = [NSString stringWithFormat:@"%s/InsertImage", SERVER_URL];
         NSURL *postURL = [NSURL URLWithString:baseURL];
@@ -111,8 +142,19 @@ NSString *result;
         [jsonUpload setObject:uuid forKey:@"uuid"];
         [jsonUpload setObject:module forKey:@"module"];
         [jsonUpload setObject:page forKey:@"page"];
+        frame = [NSString stringWithFormat:@"%d", frameNumber];
+        frameNumber = frameNumber + 1;
         [jsonUpload setObject:frame forKey:@"frame"];
-        [jsonUpload setObject:testImage forKey:@"image"];
+        
+        Mat byteImage = image;
+        vector<Byte> v_char;
+        for(int i = 0; i < byteImage.rows; i++) {
+            for(int j = 0; j < image.cols; j++) {
+                v_char.push_back(*(uchar*)(image.data + i*image.step + j));
+            }
+        }
+        
+        [jsonUpload setObject:byteArray forKey:@"image"];
         
         NSData *requestBody = [NSJSONSerialization dataWithJSONObject:jsonUpload options:NSJSONWritingPrettyPrinted error:&error];
         
@@ -131,14 +173,12 @@ NSString *result;
                                                              
                                                          }];
         [postTask resume];
+        
+    } else {
+        testCheck = testCheck + 1;
 
     }
     
-//    NSLog(@"Converted back to mat.");
-    
-    cvtColor(image, image_copy_new, CV_BGRA2BGR); //get rid of alpha for processing
-    
-    imageFrames[frameCount] = image_copy;
     frameCount++;
     
     if(frameCount > 359) {
