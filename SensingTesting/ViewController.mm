@@ -123,20 +123,11 @@ NSString *tempImage;
     Mat grayFrame, output;
     NSError *error = nil;
     
-    if(testCheck < 24) {
-        testCheck = testCheck + 1;
-        
-        UIImage *uImage = [self imageWithCVMat:image];
-        NSData *dataObj = UIImageJPEGRepresentation(uImage, 1.0);
-        int bytes = [dataObj length];
-        //NSLog(@"%@", dataObj);
-        
-        NSString *byteArray = [dataObj base64Encoding];
-        
-        //NSLog(byteArray);
-        
-        baseURL = [NSString stringWithFormat:@"%s/InsertImage", SERVER_URL];
-        NSURL *postURL = [NSURL URLWithString:baseURL];
+    imageFrames[frameCount] = image;
+    frameCount++;
+    
+    if(frameCount > 24) {
+        frameCount = 0;
         
         jsonUpload = [[NSMutableDictionary alloc] init];
         [jsonUpload setObject:uuid forKey:@"uuid"];
@@ -146,22 +137,37 @@ NSString *tempImage;
         frameNumber = frameNumber + 1;
         [jsonUpload setObject:frame forKey:@"frame"];
         
-        Mat byteImage = image;
-        vector<Byte> v_char;
-        for(int i = 0; i < byteImage.rows; i++) {
-            for(int j = 0; j < image.cols; j++) {
-                v_char.push_back(*(uchar*)(image.data + i*image.step + j));
-            }
-        }
-        
-        [jsonUpload setObject:byteArray forKey:@"image"];
-        
-        NSData *requestBody = [NSJSONSerialization dataWithJSONObject:jsonUpload options:NSJSONWritingPrettyPrinted error:&error];
+        baseURL = [NSString stringWithFormat:@"%s/InsertImage", SERVER_URL];
+        NSURL *postURL = [NSURL URLWithString:baseURL];
         
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:postURL];
+        
+        for(int i = 0; i < 24; i++) {
+            UIImage *uImage = [self imageWithCVMat:imageFrames[i]];
+            NSData *dataObj = UIImageJPEGRepresentation(uImage, 1.0);
+            int bytes = [dataObj length];
+            //NSLog(@"%@", dataObj);
+            
+            NSString *byteArray = [dataObj base64Encoding];
+            
+            //NSLog(byteArray);
+            
+            /*Mat byteImage = image;
+            vector<Byte> v_char;
+            for(int i = 0; i < byteImage.rows; i++) {
+                for(int j = 0; j < image.cols; j++) {
+                    v_char.push_back(*(uchar*)(image.data + i*image.step + j));
+                }
+            }*/
+            NSString *thisTemp = [NSString stringWithFormat:@"image%d", i];
+            NSLog(thisTemp);
+            [jsonUpload setObject:byteArray forKey:thisTemp];
+            
+        }
+        
+        NSData *requestBody = [NSJSONSerialization dataWithJSONObject:jsonUpload options:NSJSONWritingPrettyPrinted error:&error];
         [request setHTTPMethod:@"POST"];
         [request setHTTPBody:requestBody];
-        
         NSURLSessionDataTask *postTask = [self.session dataTaskWithRequest:request
                                                          completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                              NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData: data
@@ -173,17 +179,7 @@ NSString *tempImage;
                                                              
                                                          }];
         [postTask resume];
-        
-    } else {
-        testCheck = testCheck + 1;
 
-    }
-    
-    frameCount++;
-    
-    if(frameCount > 359) {
-        //Analyze copy of the array
-        frameCount = 0;
     }
     
 }
