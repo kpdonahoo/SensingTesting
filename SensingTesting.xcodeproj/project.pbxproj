@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		38845D951A85A88C00858F74 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 38845D941A85A88C00858F74 /* main.m */; };
-		38845D981A85A88C00858F74 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 38845D971A85A88C00858F74 /* AppDelegate.m */; };
+		38845D981A85A88C00858F74 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 38845D971A85A88C00858F74 /* AppDelegate.mm */; };
 		38845D9B1A85A88C00858F74 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 38845D9A1A85A88C00858F74 /* ViewController.mm */; };
 		38845D9E1A85A88C00858F74 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38845D9C1A85A88C00858F74 /* Main.storyboard */; };
 		38845DA01A85A88C00858F74 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38845D9F1A85A88C00858F74 /* Images.xcassets */; };
@@ -42,7 +42,7 @@
 		38845D931A85A88C00858F74 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		38845D941A85A88C00858F74 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		38845D961A85A88C00858F74 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		38845D971A85A88C00858F74 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		38845D971A85A88C00858F74 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		38845D991A85A88C00858F74 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		38845D9A1A85A88C00858F74 /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
 		38845D9D1A85A88C00858F74 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -126,7 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				38845D961A85A88C00858F74 /* AppDelegate.h */,
-				38845D971A85A88C00858F74 /* AppDelegate.m */,
+				38845D971A85A88C00858F74 /* AppDelegate.mm */,
 				38845D991A85A88C00858F74 /* ViewController.h */,
 				38845D9A1A85A88C00858F74 /* ViewController.mm */,
 				38845D9C1A85A88C00858F74 /* Main.storyboard */,
@@ -264,7 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				38845D9B1A85A88C00858F74 /* ViewController.mm in Sources */,
-				38845D981A85A88C00858F74 /* AppDelegate.m in Sources */,
+				38845D981A85A88C00858F74 /* AppDelegate.mm in Sources */,
 				38845D951A85A88C00858F74 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

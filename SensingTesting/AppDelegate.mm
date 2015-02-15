@@ -1,12 +1,12 @@
 //
-//  ViewController.m
+//  AppDelegate.m
 //  SensingTesting
 //
 //  Created by Kevin Donahoo on 2/6/15.
 //  Copyright (c) 2015 Sharkbait. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "AppDelegate.h"
 #ifdef __cplusplus
 #import <opencv2/videoio/cap_ios.h>
 #import <opencv2/opencv.hpp>
@@ -18,51 +18,15 @@
 using namespace cv;
 using namespace std;
 
-@interface ViewController () <CvVideoCameraDelegate,NSURLSessionDelegate>
+@interface AppDelegate () <CvVideoCameraDelegate,NSURLSessionDelegate>
+
 @property (strong, nonatomic) IBOutlet UIView *cameraOutput;
 @property (nonatomic, strong) CvVideoCamera* videoCamera1;
 @property (strong,nonatomic) NSURLSession *session;
 
 @end
 
-@implementation ViewController
-NSString* dataString;
-NSString* tempString;
-float redArray1[360];
-Mat imageFrames[360];
-Mat filteredFrames[360];
-Mat image_new;
-vector<cv::Rect> objects;
-int frameCount;
-int testCheck = 1;
-int frameNumber = 1;
-NSString *baseURL;
-NSMutableDictionary *jsonUpload;
-NSString *uuid = @"1234";
-NSString *frame;
-NSString *module = @"1";
-NSString *page = @"3";
-NSString *testImage = @"321";
-NSString *result;
-NSData *imageData;
-NSString *tempImage;
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-//    [self.videoCamera start];
-//    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-//    sessionConfig.timeoutIntervalForRequest = 5.0;
-//    sessionConfig.timeoutIntervalForResource = 8.0;
-//    sessionConfig.HTTPMaximumConnectionsPerHost = 1;
-    
-//    self.session = [NSURLSession sessionWithConfiguration: sessionConfig
-//                                                 delegate:self delegateQueue:nil];
-}
-
--(void)viewWillDisappear:(BOOL)animated {
-//    [self.videoCamera stop];
-}
+@implementation AppDelegate
 
 -(CvVideoCamera *)videoCamera{
     if(!_videoCamera1) {
@@ -77,43 +41,9 @@ NSString *tempImage;
     return _videoCamera1;
 }
 
-#ifdef __cplusplus
-
--(UIImage *)imageWithCVMat:(const Mat&)cvMat {
-    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize() * cvMat.total()];
-    
-    CGColorSpaceRef colorSpace;
-    
-    if(cvMat.elemSize() == 1) {
-        colorSpace = CGColorSpaceCreateDeviceGray();
-        
-    } else {
-        colorSpace = CGColorSpaceCreateDeviceRGB();
-    }
-    
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-    
-    CGImageRef imageRef = CGImageCreate(cvMat.cols,
-                                        cvMat.rows,
-                                        8,
-                                        8 * cvMat.elemSize(),
-                                        cvMat.step[0],
-                                        colorSpace,
-                                        kCGImageAlphaNone | kCGBitmapByteOrderDefault,
-                                        provider,
-                                        NULL,
-                                        false,
-                                        kCGRenderingIntentDefault);
-    
-    UIImage *image = [[UIImage alloc] initWithCGImage:imageRef];
-    CGImageRelease(imageRef);
-    CGDataProviderRelease(provider);
-    CGColorSpaceRelease(colorSpace);
-    
-    return image;
-}
-
+#ifdef _cplusplus
 -(void)processImage:(Mat&)image; {
+    NSLog(@"hey");
     Mat grayFrame, output;
     NSError *error = nil;
     
@@ -147,12 +77,12 @@ NSString *tempImage;
             //NSLog(byteArray);
             
             /*Mat byteImage = image;
-            vector<Byte> v_char;
-            for(int i = 0; i < byteImage.rows; i++) {
-                for(int j = 0; j < image.cols; j++) {
-                    v_char.push_back(*(uchar*)(image.data + i*image.step + j));
-                }
-            }*/
+             vector<Byte> v_char;
+             for(int i = 0; i < byteImage.rows; i++) {
+             for(int j = 0; j < image.cols; j++) {
+             v_char.push_back(*(uchar*)(image.data + i*image.step + j));
+             }
+             }*/
             NSString *thisTemp = [NSString stringWithFormat:@"image%d", i];
             NSLog(thisTemp);
             [jsonUpload setObject:byteArray forKey:thisTemp];
@@ -173,15 +103,39 @@ NSString *tempImage;
                                                              
                                                          }];
         [postTask resume];
-
+        
     }
     
 }
 #endif
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Override point for customization after application launch.
+    return YES;
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    [self.videoCamera start];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
 @end
